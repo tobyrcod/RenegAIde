@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class GameController : CursorArea
 {
     Renegade renegade;
-
+    List<Vector2Int> possibleMoves = new List<Vector2Int>();
 
     [SerializeField] Transform gridCursor;
     Vector2 cursorLocation = new Vector2Int(6, 2);
@@ -22,6 +23,7 @@ public class GameController : CursorArea
         cellsController.InitializeCellUIs();
 
         renegade = new Renegade(8, 8, doesWhiteStart, UpdateCellsUIAtIndex);
+        UpdatePossibleMovesUI();
     }
 
     private void UpdateCellsUIAtIndex(int x, int y, CounterType type) {
@@ -29,7 +31,14 @@ public class GameController : CursorArea
     }
 
     public override void ActivateSelection() {
-        renegade.PlaceCounter((int)cursorLocation.x, (int)cursorLocation.y);     
+        renegade.PlaceCounter((int)cursorLocation.x, (int)cursorLocation.y);
+        UpdatePossibleMovesUI();
+    }
+
+    private void UpdatePossibleMovesUI() {
+        possibleMoves.ForEach(m => cellsController.CellUIs[m.x, m.y].CanMoveIcon(false));
+        possibleMoves = renegade.PossibleMoves;
+        possibleMoves.ForEach(m => cellsController.CellUIs[m.x, m.y].CanMoveIcon(true));
     }
 
     public override void MoveCursorDown() {

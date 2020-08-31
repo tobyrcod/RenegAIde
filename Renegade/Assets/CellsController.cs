@@ -37,7 +37,7 @@ public class CellsController : MonoBehaviour
 
     private void UpdateCellSprite(int x, int y) {
         CellUI cell = CellUIs[x, y];
-        cell.ImageRenderer.sprite = counterAtlas.GetSprite(cell.counterType.ToString()); 
+        cell.CounterImage.sprite = counterAtlas.GetSprite(cell.counterType.ToString()); 
     }
 }
 
