@@ -33,21 +33,29 @@ public class Renegade
 
     public bool PlaceCounter(int x, int y) {
 
+        Debug.Log(new Vector2Int(x, y));
+
         if (counters[x, y] == null) {
-            counters[x, y] = new Counter(isWhitesTurn);
-            CounterType type = (isWhitesTurn) ? CounterType.whitecounter : CounterType.blackcounter;
-            CheckForSwaps(isWhitesTurn, x, y);
 
-            isWhitesTurn = !isWhitesTurn;       
-            OnCounterChangedEvent?.Invoke(x, y, type);
+            if (CheckForSwaps(isWhitesTurn, x, y)) {
 
-            return true;
+                counters[x, y] = new Counter(isWhitesTurn);
+                CounterType type = (isWhitesTurn) ? CounterType.whitecounter : CounterType.blackcounter;
+
+
+                isWhitesTurn = !isWhitesTurn;
+                OnCounterChangedEvent?.Invoke(x, y, type);
+
+                return true;
+            }
         }     
 
         return false;
     }
 
-    public void CheckForSwaps(bool isPlacedWhite, int placedX, int placedY) {
+    public bool CheckForSwaps(bool isPlacedWhite, int placedX, int placedY) {
+
+        bool swapped = false;
 
         Vector2Int placedPos = new Vector2Int(placedX, placedY);
         Vector2Int[] displacements = { new Vector2Int(-1, -1), new Vector2Int(-1, 0), new Vector2Int(-1, 1),
@@ -63,45 +71,48 @@ public class Renegade
                 i++;
                 Vector2Int checkPos = placedPos + i * displacement;
 
-                Debug.Log(checkPos);
-
                 if (IsIndexValid(checkPos)) {
-                    Debug.Log("Valid");
+                    //Posiion is Valid
 
                     Counter counter = counters[checkPos.x, checkPos.y];
                     if (counter != null) {
-                        Debug.Log("Counter Found");
+                        //Counter Found
 
                         if (counter.isWhite == isPlacedWhite) {
-                            Debug.Log("Counter is Same Color");
+                            //Counter is Same Color
+
+                            if (swapIndexes.Count > 0)
+                                swapped = true;
 
                             swapIndexes.ForEach(c => SwapCounterColour(c.x, c.y));
                             shouldCheck = false;
                         }
                         else {
-                            Debug.Log("Counter is other Color");
+                            //Counter is other Color
 
                             swapIndexes.Add(checkPos);
                         }
                     }
                     else {
-                        Debug.Log("No Counter Found");
+                        //No Counter Found
 
                         shouldCheck = false;
                     }
                 }
                 else {
-                    Debug.Log("Invalid");
+                    //Invalid
 
                     shouldCheck = false;
                 }
 
             } while (shouldCheck);
         }
+
+        return swapped;
     }
 
     private bool IsIndexValid(Vector2Int index) {
-        return !(index.x > 8 || index.x < 0 || index.y > 8 || index.y < 0);
+        return !(index.x > 7 || index.x < 0 || index.y > 7 || index.y < 0);
     }
 
     public void SwapCounterColour(int x, int y) {

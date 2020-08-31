@@ -3390,6 +3390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridCursor: {fileID: 571505832}
   cellsController: {fileID: 1554033989}
+  doesWhiteStart: 0
 --- !u!1 &716960750
 GameObject:
   m_ObjectHideFlags: 0
