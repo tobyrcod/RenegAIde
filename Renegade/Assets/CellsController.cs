@@ -31,7 +31,7 @@ public class CellsController : MonoBehaviour
         }
     }
 
-    internal void PlaceCell(int x, int y, CounterType type) {
+    internal void UpdateCell(int x, int y, CounterType type) {
         CellUIs[x, y].PlaceCell(type);
     }
 

@@ -16,20 +16,20 @@ public class GameController : CursorArea
 
     [Space]
 
-    [SerializeField] bool isWhitesTurn;
+    [SerializeField] bool doesWhiteStart;
 
     private void Awake() {
         cellsController.InitializeCellUIs();
 
-        renegade = new Renegade(8, 8, UpdateCellsUIAtIndex);
+        renegade = new Renegade(8, 8, doesWhiteStart, UpdateCellsUIAtIndex);
     }
 
     private void UpdateCellsUIAtIndex(int x, int y, CounterType type) {
-        cellsController.PlaceCell(x, y, type);
+        cellsController.UpdateCell(x, y, type);
     }
 
     public override void ActivateSelection() {
-        renegade.PlaceCounter((int)cursorLocation.x, (int)cursorLocation.y, true);     
+        renegade.PlaceCounter((int)cursorLocation.x, (int)cursorLocation.y);     
     }
 
     public override void MoveCursorDown() {
