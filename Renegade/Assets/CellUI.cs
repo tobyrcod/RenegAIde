@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-public class Cell : MonoBehaviour
+public class CellUI : MonoBehaviour
 {
     private int x, y;
 

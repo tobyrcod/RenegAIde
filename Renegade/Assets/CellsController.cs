@@ -6,23 +6,23 @@ using UnityEngine.U2D;
 
 public class CellsController : MonoBehaviour
 {
-    public Cell[,] Cells;
+    public CellUI[,] CellUIs;
 
     [Space]
 
     [SerializeField] SpriteAtlas counterAtlas;
 
-    private void InitializeCells() {
-        if (Cells == null) {
-            Cells = new Cell[8, 8];
-            Cell[] cells = GetComponentsInChildren<Cell>();
+    public void InitializeCellUIs() {
+        if (CellUIs == null) {
+            CellUIs = new CellUI[8, 8];
+            CellUI[] cells = GetComponentsInChildren<CellUI>();
             for (int i = 0; i < cells.Length; i++) {
                 int x = i / 8;
                 int y = i % 8;
-                Cells[x, y] = cells[i];
-                Cells[x, y].SetXY(x, y);
-                Cells[x, y].counterType = CounterType.blackcounter;
-                Cells[x, y].OnCellTypeChangedEvent += UpdateCellSprite;
+                CellUIs[x, y] = cells[i];
+                CellUIs[x, y].SetXY(x, y);
+                CellUIs[x, y].counterType = CounterType.blackcounter;
+                CellUIs[x, y].OnCellTypeChangedEvent += UpdateCellSprite;
 
                 //eg 9 / 8 = 1
                 //   9 % 8 = 1
@@ -32,20 +32,11 @@ public class CellsController : MonoBehaviour
     }
 
     internal void PlaceCell(int x, int y, CounterType type) {
-        Cells[x, y].PlaceCell(type);
-    }
-
-    private void Awake() {
-        InitializeCells();
-    }
-
-    private void Start() {
-        Cells[2, 2].PlaceCell(CounterType.whitecounter);
+        CellUIs[x, y].PlaceCell(type);
     }
 
     private void UpdateCellSprite(int x, int y) {
-        Debug.Log("Changing");
-        Cell cell = Cells[x, y];
+        CellUI cell = CellUIs[x, y];
         cell.ImageRenderer.sprite = counterAtlas.GetSprite(cell.counterType.ToString()); 
     }
 }

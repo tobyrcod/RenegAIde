@@ -3,16 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridController : CursorArea
+public class GameController : CursorArea
 {
+    Renegade renegade;
+
+
     [SerializeField] Transform gridCursor;
     Vector2 cursorLocation = new Vector2Int(6, 2);
     Vector2 originPosition = new Vector2Int(-28, -28);
     int cellSize = 8;
     [SerializeField] CellsController cellsController;
 
+    [Space]
+
+    [SerializeField] bool isWhitesTurn;
+
+    private void Awake() {
+        cellsController.InitializeCellUIs();
+
+        renegade = new Renegade(8, 8, UpdateCellsUIAtIndex);
+    }
+
+    private void UpdateCellsUIAtIndex(int x, int y, CounterType type) {
+        cellsController.PlaceCell(x, y, type);
+    }
+
     public override void ActivateSelection() {
-        cellsController.PlaceCell((int)cursorLocation.x, (int)cursorLocation.y, CounterType.whitecounter);
+        renegade.PlaceCounter((int)cursorLocation.x, (int)cursorLocation.y, true);     
     }
 
     public override void MoveCursorDown() {
