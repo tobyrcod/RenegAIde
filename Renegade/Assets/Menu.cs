@@ -14,7 +14,6 @@ public class Menu : MonoBehaviour
     }
 
     private IEnumerator StartGame(float waitTime) {
-        Debug.Log(waitTime);
         yield return new WaitForSeconds(waitTime);
         GameManager.instance.ChangeScene("Game");
     }

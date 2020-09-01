@@ -9,14 +9,28 @@ using Random = System.Random;
 public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
+
+    [SerializeField] public bool isSoundOn { get; private set; }
+    [SerializeField] AudioListener audioListener;
+
+    internal void ToggleSound() {
+        isSoundOn = !isSoundOn;
+        audioListener.enabled = isSoundOn;
+    }
+
     private int activeSceneIndex = -1;
 
     public SoundAudioClip[] playerSoundArray;
     public Dictionary<SoundManager.Sound, AudioClip> SoundAudioClipDictionary = new Dictionary<SoundManager.Sound, AudioClip>();
 
+    public bool isPlayerWhite = true;
+    public bool doesPlayerStart = true;
+
     private void Start() {
         if (instance == null)
             instance = this;
+
+        isSoundOn = true;
 
         if (playerSoundArray != null) {
             foreach (SoundAudioClip soundAudioClip in playerSoundArray) {

@@ -29,6 +29,8 @@ public static class SoundManager
     public enum Sound {
         pressStart,
         gameBackground,
+        playerPlaceCounter,
+        enemyPlaceCounter,
     }
 }
 

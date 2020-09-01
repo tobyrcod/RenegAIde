@@ -29,6 +29,12 @@ public class CursorController : MonoBehaviour
             currentCursorArea.ActivateSelection();
         }
     }
+
+    internal void ChangeCursorArea(CursorArea newCursorArea) {
+        currentCursorArea.Exit();
+        currentCursorArea = newCursorArea;
+        currentCursorArea.Enter();
+    }
 }
 
 [Serializable]
@@ -39,4 +45,10 @@ public abstract class CursorArea : MonoBehaviour {
     public abstract void MoveCursorRight();
     public abstract void UpdateCursorLocation();
     public abstract void ActivateSelection();
+
+    public abstract void Exit();
+    public abstract void Enter();
+
+    [SerializeField] protected CursorController cursorController;
+    [SerializeField] protected CursorUI cursorUI;
 }

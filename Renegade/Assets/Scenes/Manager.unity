@@ -131,6 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1928476299}
   - component: {fileID: 1928476300}
+  - component: {fileID: 1928476301}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -164,8 +165,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe83de51a61a3541b4d96f0ef326ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioListener: {fileID: 1928476301}
   playerSoundArray:
   - sound: 0
     audioClip: {fileID: 8300000, guid: 862f51be0631cc041a998d1e0a1a1208, type: 3}
   - sound: 1
     audioClip: {fileID: 8300000, guid: 6d153857af3b3a846940c2f29964cabb, type: 3}
+  - sound: 2
+    audioClip: {fileID: 8300000, guid: 99bdff02f21759f44baf9cc8a6cbf084, type: 3}
+  - sound: 3
+    audioClip: {fileID: 8300000, guid: da5c5bfe08042b8418994bd3758be142, type: 3}
+  isPlayerWhite: 1
+  doesPlayerStart: 1
+--- !u!81 &1928476301
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928476298}
+  m_Enabled: 1
