@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
-public class GameController : CursorArea
+public class RenegadeUI : CursorArea
 {
     Renegade renegade;
     List<Vector2Int> possibleMoves = new List<Vector2Int>();
@@ -31,8 +31,8 @@ public class GameController : CursorArea
     }
 
     public override void ActivateSelection() {
-        renegade.PlaceCounter((int)cursorLocation.x, (int)cursorLocation.y);
-        UpdatePossibleMovesUI();
+        if (renegade.TryToApplyMove((int)cursorLocation.x, (int)cursorLocation.y))
+            UpdatePossibleMovesUI();
     }
 
     private void UpdatePossibleMovesUI() {

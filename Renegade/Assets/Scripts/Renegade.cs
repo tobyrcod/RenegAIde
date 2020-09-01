@@ -6,14 +6,20 @@ using UnityEngine;
 public class Renegade
 {
     public Action<int, int, CounterType> OnCounterChangedEvent;
-    Counter[,] counters;
 
+    int width, height;
+    Counter[,] counters;
     private bool isWhitesTurn;
+    private int placedCounters;
 
     public List<Vector2Int> PossibleMoves { get; private set; }
-    public Renegade(int width, int height, bool isWhitesTurn, Action<int,int,CounterType> OnCounterChanged) {
+    public Renegade(int width, int height, bool isWhitesTurn, Action<int, int, CounterType> OnCounterChanged) {
+        this.width = width;
+        this.height = height;
+
         this.counters = new Counter[width, height];
         this.isWhitesTurn = isWhitesTurn;
+
         OnCounterChangedEvent += OnCounterChanged;
 
         PlaceCounterOfColour(3, 3, false);
@@ -24,11 +30,56 @@ public class Renegade
         UpdatePossibleMoves();
     }
 
+    public Renegade(int width, int height, bool isWhitesTurn, Counter[,] counters, int placedCounters) {
+        this.counters = new Counter[width, height]; 
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (counters[x, y] != null) {
+                    this.counters[x, y] = new Counter(counters[x, y].isWhite);
+                }
+            }
+        }
+
+        this.isWhitesTurn = isWhitesTurn;
+        this.placedCounters = placedCounters;
+    }
+
+    public bool GameOver;
+
+    private bool IsGameOver() {
+        return placedCounters >= 64;
+    }
+
+    public int StaticEvalutation() {
+        //White is Mini Player
+        //Black is Max Player
+        int whiteCounters = GetCountersOfColour(true);
+
+        return placedCounters - whiteCounters;
+    }
+
+    private int GetCountersOfColour(bool isWhite) {
+        int count = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (counters[x, y] != null) {
+                    if (counters[x, y].isWhite)
+                        count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
     public bool PlaceCounterOfColour(int x, int y, bool isWhite) {
         if (counters[x, y] == null) {
             counters[x, y] = new Counter(isWhite);
             CounterType type = (isWhite) ? CounterType.whitecounter : CounterType.blackcounter;
             OnCounterChangedEvent?.Invoke(x, y, type);
+
+            placedCounters++;
+
             return true;
         }      
 
@@ -37,8 +88,8 @@ public class Renegade
 
     private List<Vector2Int> CalculatePossibleMoves() {
         List<Vector2Int> possibleMoves = new List<Vector2Int>();
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 if (counters[x, y] == null) {
                     if (CanSwap(isWhitesTurn, x, y)) {
                         possibleMoves.Add(new Vector2Int(x, y));
@@ -50,38 +101,37 @@ public class Renegade
         return possibleMoves;
     }
 
-    public bool PlaceCounter(int x, int y) {
-
-        Debug.Log(new Vector2Int(x, y));
-
+    public bool TryToApplyMove(int x, int y) {
         if (counters[x, y] == null) {
-
-            if (CanSwap(isWhitesTurn, x, y, out List<Vector2Int> swapIndexes)) {
-
-                swapIndexes.ForEach(c => SwapCounterColour(c.x, c.y));
-
-                counters[x, y] = new Counter(isWhitesTurn);
-                CounterType type = (isWhitesTurn) ? CounterType.whitecounter : CounterType.blackcounter;
-
-                isWhitesTurn = !isWhitesTurn;
-                OnCounterChangedEvent?.Invoke(x, y, type);
-
-                UpdatePossibleMoves();
-
+            if (CanSwap(isWhitesTurn, x, y)) {
+                ApplyMove(x, y);
                 return true;
             }
-        }     
-
+        }
         return false;
+    }
+
+    public void ApplyMove(int x, int y) {
+
+        List<Vector2Int> swapIndexes = GetSwapIndexes(isWhitesTurn, x, y);
+        swapIndexes.ForEach(c => SwapCounterColour(c.x, c.y));
+
+        counters[x, y] = new Counter(isWhitesTurn);
+        CounterType type = (isWhitesTurn) ? CounterType.whitecounter : CounterType.blackcounter;
+
+        isWhitesTurn = !isWhitesTurn;
+        OnCounterChangedEvent?.Invoke(x, y, type);
+
+        placedCounters++;
+
+        UpdatePossibleMoves();
     }
 
     private void UpdatePossibleMoves() {
         PossibleMoves = CalculatePossibleMoves();
     }
 
-    public bool CanSwap(bool isPlacedWhite, int placedX, int placedY, out List<Vector2Int> totalSwapIndexes) {
-
-        bool swapped = false;
+    public List<Vector2Int> GetSwapIndexes(bool isPlacedWhite, int placedX, int placedY) {
 
         List<Vector2Int> returnSwapIndexes = new List<Vector2Int>();
         Vector2Int placedPos = new Vector2Int(placedX, placedY);
@@ -110,7 +160,6 @@ public class Renegade
 
                             if (swapIndexes.Count > 0) {
                                 swapIndexes.ForEach(c => returnSwapIndexes.Add(c));
-                                swapped = true;
                             }
 
                             shouldCheck = false;
@@ -136,8 +185,7 @@ public class Renegade
             } while (shouldCheck);
         }
 
-        totalSwapIndexes = returnSwapIndexes;
-        return swapped;
+        return returnSwapIndexes;
     }
 
     public bool CanSwap(bool isPlacedWhite, int placedX, int placedY) {
@@ -205,6 +253,16 @@ public class Renegade
         counter.isWhite = !counter.isWhite;
         CounterType type = (counter.isWhite) ? CounterType.whitecounter : CounterType.blackcounter;
         OnCounterChangedEvent?.Invoke(x, y, type);
+    }
+
+    public Renegade GetStateAfterMove(Vector2Int possibleMove) {
+        Renegade currentState = this.DeepCopy();
+        currentState.ApplyMove(possibleMove.x, possibleMove.y);
+        return currentState;
+    }
+
+    private Renegade DeepCopy() {
+        return new Renegade(width, height, isWhitesTurn, counters, placedCounters);
     }
 
     public class Counter {
