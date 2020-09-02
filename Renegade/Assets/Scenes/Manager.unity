@@ -175,8 +175,15 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 99bdff02f21759f44baf9cc8a6cbf084, type: 3}
   - sound: 3
     audioClip: {fileID: 8300000, guid: da5c5bfe08042b8418994bd3758be142, type: 3}
-  isPlayerWhite: 1
+  - sound: 4
+    audioClip: {fileID: 8300000, guid: ceb967c236906e544889c9888150097f, type: 3}
+  - sound: 5
+    audioClip: {fileID: 8300000, guid: b8d905334c5cde14f8ce9aa640f425cf, type: 3}
+  - sound: 6
+    audioClip: {fileID: 8300000, guid: aebe8fe23512247408cdee96ff55fa3d, type: 3}
+  isPlayerWhite: 0
   doesPlayerStart: 1
+  isAIActive: 1
 --- !u!81 &1928476301
 AudioListener:
   m_ObjectHideFlags: 0

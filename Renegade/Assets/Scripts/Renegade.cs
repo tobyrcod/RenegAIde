@@ -68,7 +68,9 @@ public class Renegade {
         }
 
         this.PossibleMovesSwapIndexCache = PossibleMovesSwapIndexCache;
-        this.potentialMoves = potentialMoves;
+        foreach (Vector2Int move in potentialMoves) {
+            this.potentialMoves.Add(move);
+        }
 
         this.width = width;
         this.height = height;
@@ -83,16 +85,33 @@ public class Renegade {
     public bool GameOver;
 
     private bool IsGameOver() {
-        return placedCounters >= width * height;
+        return (placedCounters >= width * height) || (whiteScoreTotal == 0) || (blackScoreTotal == 0);
     }
 
     public int StaticEvalutation() {
         //White is Mini Player
         //Black is Max Player
 
-        Debug.Log(blackScoreTotal - whiteScoreTotal);
-
         return blackScoreTotal - whiteScoreTotal;
+    }
+
+    public void GetCounterCount(out int whiteCount, out int blackCount) {
+        int _blackCount = 0;
+        int _whiteCount = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (counters[x, y] != null) {
+                    if (counters[x, y].isWhite) {
+                        _whiteCount++;
+                    }
+                    else {
+                        _blackCount++;
+                    }
+                }
+            }
+        }
+        whiteCount = _whiteCount;
+        blackCount = _blackCount;
     }
 
     public void PlaceCounterOfColour(Vector2Int move, bool isWhite) {
@@ -113,15 +132,21 @@ public class Renegade {
 
         placedCounters++;
 
-        foreach (Vector2Int direction in directions) {
-            Vector2Int potentialMove = move + direction;
-            if (!potentialMoves.Contains(potentialMove)) {
+        for (int i = move.y + 1; i >= move.y - 1; i--) {
+            for (int j = move.x - 1; j <= move.x + 1; j++) {
+                Vector2Int potentialMove = new Vector2Int(j, i);
                 if (IsIndexValid(potentialMove)) {
-                    if (counters[potentialMove.x, potentialMove.y] == null) {
-                        potentialMoves.Add(potentialMove);
+                    if (!potentialMoves.Contains(potentialMove)) {
+                        if (counters[potentialMove.x, potentialMove.y] == null) {
+                            potentialMoves.Add(potentialMove);
+                        }
                     }
                 }
             }
+        }
+
+        if (potentialMoves.Contains(move)) {
+            potentialMoves.Remove(move);
         }
     }
 
@@ -129,23 +154,19 @@ public class Renegade {
         HashSet<Vector2Int> possibleMoves = new HashSet<Vector2Int>();
         possibleMovesSwapIndex = new Dictionary<Vector2Int, List<Vector2Int>>();
         foreach (Vector2Int potentialMove in potentialMoves) {
-            if (counters[potentialMove.x, potentialMove.y] == null) {
-                if (CanSwap(isWhitesTurn, potentialMove, out List<Vector2Int> swapIndexes)) {
-                    possibleMoves.Add(potentialMove);
-                    possibleMovesSwapIndex.Add(potentialMove, swapIndexes);
-                }
-            }
+            if (CanSwap(isWhitesTurn, potentialMove, out List<Vector2Int> swapIndexes)) {
+                possibleMoves.Add(potentialMove);
+                possibleMovesSwapIndex.Add(potentialMove, swapIndexes);
+            }       
         } 
            
         return possibleMoves;
     }
 
     public bool TryToApplyMove(Vector2Int move) {
-        if (counters[move.x, move.y] == null) {
-            if (PossibleMoves.Contains(move)) {
-                ApplyMove(move);
-                return true;
-            }
+        if (PossibleMoves.Contains(move)) {
+            ApplyMove(move);
+            return true;
         }
 
         return false;

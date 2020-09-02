@@ -24,7 +24,7 @@ public static class RenegadeAI
             foreach (Vector2Int possibleMove in possibleMoves) {
                 Renegade stateAfterMove = currentState.GetStateAfterMove(possibleMove);
                 int eval = Minimax(stateAfterMove, depth - 1, alpha, beta, false);
-                if (eval > maxEval) {
+                if (eval >= maxEval) {
                     maxEval = eval;
                     localBestMove = possibleMove;
                 }
@@ -44,7 +44,7 @@ public static class RenegadeAI
             foreach (Vector2Int possibleMove in possibleMoves) {
                 Renegade stateAfterMove = currentState.GetStateAfterMove(possibleMove);
                 int eval = Minimax(stateAfterMove, depth - 1, alpha, beta, true);
-                if (eval < minEval) {
+                if (eval <= minEval) {
                     minEval = eval;
                     localBestMove = possibleMove;
                 }

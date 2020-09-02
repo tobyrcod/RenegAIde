@@ -31,6 +31,9 @@ public static class SoundManager
         gameBackground,
         playerPlaceCounter,
         enemyPlaceCounter,
+        settings1,
+        settings2,
+        settings3,
     }
 }
 

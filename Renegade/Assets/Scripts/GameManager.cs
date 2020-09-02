@@ -18,13 +18,12 @@ public class GameManager : MonoBehaviour {
         audioListener.enabled = isSoundOn;
     }
 
-    private int activeSceneIndex = -1;
-
     public SoundAudioClip[] playerSoundArray;
     public Dictionary<SoundManager.Sound, AudioClip> SoundAudioClipDictionary = new Dictionary<SoundManager.Sound, AudioClip>();
 
     public bool isPlayerWhite = true;
     public bool doesPlayerStart = true;
+    public bool isAIActive = true;
 
     private void Start() {
         if (instance == null)

@@ -31,6 +31,10 @@ public class CellUI : MonoBehaviour
         }
     }
 
+    public void SetColor(Color color) {
+        CanMoveImage.color = color;     
+    }
+
     public void CanMoveIcon(bool enabled) {
         CanMoveImage.gameObject.SetActive(enabled);
     }
