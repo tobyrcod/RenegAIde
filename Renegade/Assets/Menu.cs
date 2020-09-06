@@ -14,7 +14,7 @@ public class Menu : MonoBehaviour
     void Update()
     {
         if (!pressed) {
-            if (Input.GetKeyDown(KeyCode.Return)) {
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.P)) {
                 pressed = true;
                 SoundManager.PlaySound(SoundManager.Sound.pressStart);
                 StartCoroutine(StartGame(1f));

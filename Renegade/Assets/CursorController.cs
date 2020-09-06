@@ -25,7 +25,7 @@ public class CursorController : MonoBehaviour
             currentCursorArea.MoveCursorRight();
         }
 
-        if (Input.GetKeyDown(KeyCode.Return)) {
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.P)) {
             currentCursorArea.ActivateSelection();
         }
     }

@@ -77,7 +77,7 @@ public class RenegadeUI : CursorArea
                 else {
                     if (isAIActive) {
                         if (renegade.isWhitesTurn != isPlayerWhite) {
-                            StartCoroutine(MakeAIMove(0f, isPlayerWhite));
+                            StartCoroutine(MakeAIMove(1f, isPlayerWhite));
                         }
                     }
                 }
@@ -134,7 +134,7 @@ public class RenegadeUI : CursorArea
         //}
 
         //therefore, maximisingPlayer = isPlayerWhite
-        RenegadeAI.Minimax(renegade, 4, int.MinValue, int.MaxValue, maximizingPlayer);
+        RenegadeAI.Minimax(renegade, 3, int.MinValue, int.MaxValue, maximizingPlayer);
         Debug.Log(RenegadeAI.BestMove);
         TryToApplyMove(RenegadeAI.BestMove);
         AIMoving = false;
